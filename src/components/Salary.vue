@@ -133,14 +133,13 @@ const option = reactive<{ [key: string]: string }>({
     }
     .setting-box {
       button {
-        display: flex;
+        display: inline-block;
         width: 40px;
         height: 40px;
-        justify-content: center;
-        align-items: center;
         cursor: pointer;
         background-color: #f7cb71;
         border-radius: 50%;
+        line-height:1;
         img {
           background-color: #fff;
           border-radius: 50%;
