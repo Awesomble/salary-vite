@@ -1,0 +1,23 @@
+{
+  "name": "salary-vite",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "gsap": "^3.8.0",
+    "vue": "^3.2.16",
+    "vue-slider-component": "^4.0.0-beta.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.9.3",
+    "node-sass": "^6.0.1",
+    "sass": "^1.43.4",
+    "sass-loader": "10.1.1",
+    "typescript": "^4.4.3",
+    "vite": "^2.6.4",
+    "vue-tsc": "^0.3.0"
+  }
+}
