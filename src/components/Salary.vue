@@ -1,40 +1,13 @@
 <script setup lang="ts">
 import 'vue-slider-component/theme/antd.css';
 import VueSlider from 'vue-slider-component'
-import { defineComponent, reactive, toRefs, onMounted, watch, ref} from 'vue'
+import { defineComponent, reactive, toRefs, onMounted, onBeforeMount,watch, ref} from 'vue'
 import tada from '../assets/images/tada.png'
 import account from '../assets/images/account.png'
 import gsap from 'gsap'
 
-
+const HEIGHT = window.innerHeight
 const score = ref<Number>(24000000)
-let isShowInfo = ref<Boolean>(false)
-
-onMounted(() => {
-  // Vue3 GSAP.to score to animate roundProps: 'score'
-  gsap.to(score.value, {
-    score: 50000000,
-    duration: 1,
-    delay: 0.5,
-    roundProps: 'score',
-    ease: 'power3.inOut',
-    onUpdate: () => {
-      console.log(score.value)
-      score.value += 1000000
-    }
-  })
-
-  // gsap.to(score.value, {
-  //   duration: 1,
-  //   roundProps: 'score',
-  //   ease: 'none',
-  //   score: 100000000000
-  // });
-});
-// Vue3 setup watch
-watch(score, () => {
-  if (isShowInfo) isShowInfo.value = false
-})
 const option = reactive<{ [key: string]: string }>({
   dotSize: 0,
   width: window.innerWidth,
@@ -47,7 +20,7 @@ const option = reactive<{ [key: string]: string }>({
   interval: 500000,
   disabled: false,
   clickable: true,
-  duration: 0.3,
+  duration: 0,
   tooltip: 'always',
   tooltipFormatter: '',
   useKeyboard: false,
@@ -60,6 +33,51 @@ const option = reactive<{ [key: string]: string }>({
   process: true,
   dotStyle: 10,
 })
+const isShowInfo = ref<Boolean>(false)
+const koreaAvg = ref<Number>(3090000 * 12)
+let avg = ref<Number>(koreaAvg)
+console.log(HEIGHT)
+const avgMotion = () : void => {
+  const avgInterval = setInterval(() => {
+    const random = Math.floor(Math.random() * 10) + 1
+    if ( random ) {
+      if ( random % 2 === 0) {
+        avg.value += 500000
+      } else {
+        avg.value -= 500000
+      }
+      if (avg > koreaAvg + koreaAvg * 0.1 || avg < koreaAvg - koreaAvg * 0.1) avg.value = koreaAvg
+      console.log(`${(HEIGHT - 75) * (avg.value / 1000000000)}%`)
+      gsap.to('.avgLine', 0.5, {
+        bottom: `${(HEIGHT - 75) * (avg.value / 1000000000)}%`
+      })
+    }
+  }, 3000)
+}
+
+
+
+watch(score, () => {
+  if (isShowInfo) isShowInfo.value = false
+})
+
+onBeforeMount(() => {
+  // Vue3 Typescript GSAP.to score count up
+  gsap.to(score, 0.5, {
+    value: 80000000,
+    delay: 1,
+    roundProps: 'value',
+    ease: 'power3.inOut',
+    onUpdate: () => {
+    },
+    onComplete: () => {
+      setTimeout(() => {
+        option.tooltip = 'active'
+        avgMotion()
+      }, 1000);
+    },
+  })
+})
 
 </script>
 
@@ -68,7 +86,9 @@ const option = reactive<{ [key: string]: string }>({
       v-model="score"
       class="salary"
       v-bind="option"
+      :tooltip-formatter="v => v.toLocaleString()"
   />
+  <div class="avgLine" />
   <div
     class="info-card"
     :class="{'active': isShowInfo}"
@@ -110,7 +130,7 @@ const option = reactive<{ [key: string]: string }>({
   left: 0;
   width: 100%;
   background-color: #f7cb71;
-  z-index: 1;
+  z-index: 2;
   transition: 0.25s bottom ease-out;
   &.active {
     bottom: 0;
@@ -140,6 +160,7 @@ const option = reactive<{ [key: string]: string }>({
         background-color: #f7cb71;
         border-radius: 50%;
         line-height:1;
+        outline: none;
         img {
           background-color: #fff;
           border-radius: 50%;
@@ -153,7 +174,38 @@ const option = reactive<{ [key: string]: string }>({
     background-color: #fff;
   }
 }
-
+/* Avg Line */
+.avgLine {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: red;
+  z-index: 1;
+  &:after {
+    content: '대한민국 평균';
+    position: absolute;
+    padding: 3px 5px 1px 5px;
+    font-size: 12px;
+    color: #fff;
+    top: -11px;
+    right: 0;
+    background-color: red;
+    z-index: 1;
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: 75px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-right: 10px solid red;
+    border-bottom: 10px solid transparent;
+  }
+}
 /* Slider */
 .vue-slider-rail {
   border-radius: 0;
