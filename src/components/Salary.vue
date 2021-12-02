@@ -46,7 +46,7 @@ const avgMotion = () : void => {
   if (avgInterval) clearInterval(avgInterval)
   avgInterval = setInterval(() => {
     const random = Math.floor(Math.random() * 10) + 1
-    if ( random ) {
+    if ( random < 5) {
       if ( random % 2 === 0) {
         avg += 500000
       } else {
@@ -87,7 +87,6 @@ const incomeTax = computed((): number => {
   const d = gabgeunse2021.tax
   const l = d.length
   const s = MC.value / 1000
-  console.log(s)
   for (let i = 0; i < l; i += 1) {
     if (s >= parseFloat(d[i][0]) && s < parseFloat(d[i][1])) {
       return parseFloat(d[i][1 + iptH.value])
@@ -144,26 +143,24 @@ onBeforeMount(() => {
       v-bind="option"
       :tooltip-formatter="v => v.toLocaleString()"
   >
-    <div class="result">
+    <div class="result"
+         :class="{'active': isShowInfo}"
+    >
       <dl>
         <dt>국민연금</dt>
-        <dd>{{ nationalPension.toLocaleString() }}</dd>
+        <dd>{{ nationalPension.toLocaleString() }}원</dd>
       </dl>
       <dl>
         <dt>의료보험</dt>
-        <dd>{{ (nationalHealth).toLocaleString() }} <span>+{{ longtermCareInsurance.toLocaleString() }}</span></dd>
+        <dd>{{ (nationalHealth).toLocaleString() }}원<span>+{{ longtermCareInsurance.toLocaleString() }}원</span></dd>
       </dl>
       <dl>
         <dt>고용보험</dt>
-        <dd>{{ employmentInsurance.toLocaleString() }}</dd>
+        <dd>{{ employmentInsurance.toLocaleString() }}원</dd>
       </dl>
       <dl>
         <dt>소득세</dt>
-        <dd>{{ (incomeTax).toLocaleString() }} <span>+{{ localIncomeTax.toLocaleString() }}</span></dd>
-      </dl>
-      <dl>
-        <dt>월급</dt>
-        <dd>{{ MC.toLocaleString() }}</dd>
+        <dd>{{ (incomeTax).toLocaleString() }}원 <span>+{{ localIncomeTax.toLocaleString() }}원</span></dd>
       </dl>
     </div>
     <div class="avgLine" />
@@ -238,12 +235,24 @@ onBeforeMount(() => {
   bottom: 0;
   z-index: 2;
   padding: 20px;
+  font-size: 15px;
+  font-weight: bold;
+  transition: 0.25s bottom ease-in-out;
+  &.active {
+    bottom: 249px;
+  }
   dl {
     dt, dd {
       display: inline-flex;
     }
     dt {
       width: 100px;
+    }
+    dd {
+      span {
+        padding-left: 10px;
+        color: #7f7f7f;
+      }
     }
   }
 }
@@ -254,7 +263,7 @@ onBeforeMount(() => {
   left: 0;
   width: 100%;
   background-color: #f7cb71;
-  z-index: 2;
+  z-index: 4;
   transition: 0.25s bottom ease-in-out;
   &.active {
     bottom: 0;
@@ -298,9 +307,18 @@ onBeforeMount(() => {
     height: 200px;
     background-color: #fef8ea;
     &:after {
-      content: "개인 소득여건에 따라 차이가 발생할 수 있습니다.";
+      content: "- 개인 소득여건에 따라 차이가 발생할 수 있습니다.";
       position: absolute;
       bottom: 0;
+      width: 100%;
+      font-size: 12px;
+      font-weight: 100;
+      color: #000;
+    }
+    &:before {
+      content: "- 2021년 9월 기준으로 개발되었습니다.";
+      position: absolute;
+      bottom: 16px;
       width: 100%;
       font-size: 12px;
       font-weight: 100;
@@ -327,11 +345,11 @@ onBeforeMount(() => {
     .showEndingCredit {
       width: 100%;
       position: absolute;
-      bottom: 30px;
+      bottom: 50px;
       button {
         display: block;
         line-height: 35px;
-        width: 25%;
+        width: 100px;
         background-color: #f7cb71;
         border-radius: 4px;
         color: #fefaf0;
@@ -351,7 +369,7 @@ onBeforeMount(() => {
   width: 100%;
   height: 1px;
   background-color: red;
-  z-index: 1;
+  z-index: 3;
   opacity: 0;
   &:after {
     content: '대한민국 평균';
