@@ -6,12 +6,13 @@ import tada from '../assets/images/tada.png'
 import account from '../assets/images/account.png'
 import gabgeunse2021 from '../assets/json/gabgeunse2021.json'
 import gsap from 'gsap'
-import EndingCredit from "./EndingCredit.vue";
+import EndingCredit from "./EndingCredit.vue"
+
 
 const WIDTH = window.innerWidth
 const HEIGHT = window.innerHeight
 const score = ref<number>(24000000)
-const option = reactive<{ [key: string]: string }>({
+const option = reactive<{ [key: string]: any }>({
   dotSize: 0,
   width: WIDTH,
   height: HEIGHT - 70,
@@ -39,7 +40,7 @@ const koreaAvg = ref<number>(3090000 * 12)
 const iptH = ref<number>(1)
 const iptF = ref<number>(100000)
 let avg: number = koreaAvg.value
-let avgInterval: number = null
+let avgInterval: number = 0
 
 // 대한민국 평균연봉 인터렉션
 const avgMotion = () : void => {
@@ -111,7 +112,7 @@ watch(score, () => {
   if (isShowInfo) isShowInfo.value = false
 })
 watch(isShowEndingCredit, () => {
-  if (isShowEndingCredit) setTimeout(_ => {
+  if (isShowEndingCredit) setTimeout(() => {
     isShowEndingCredit.value = false
   }, 30000)
 })
@@ -141,7 +142,7 @@ onBeforeMount(() => {
       v-model="score"
       class="salary"
       v-bind="option"
-      :tooltip-formatter="v => v.toLocaleString()"
+      :tooltip-formatter="(v: number) => v.toLocaleString()"
   >
     <div class="result"
          :class="{'active': isShowInfo}"

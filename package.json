@@ -1,6 +1,6 @@
 {
   "name": "salary-vite",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
@@ -9,6 +9,7 @@
   "dependencies": {
     "gsap": "^3.8.0",
     "vue": "^3.2.16",
+    "vue-class-component": "^7.2.6",
     "vue-slider-component": "^4.0.0-beta.4"
   },
   "devDependencies": {
