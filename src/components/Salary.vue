@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import 'vue-slider-component/theme/antd.css';
 import VueSlider from 'vue-slider-component'
-import { defineComponent, reactive, toRefs, onMounted, onBeforeMount,watch, ref} from 'vue'
+import { defineComponent, reactive, toRefs, onMounted, onBeforeMount,watch, ref, computed} from 'vue'
 import tada from '../assets/images/tada.png'
 import account from '../assets/images/account.png'
+import gabgeunse2021 from '../assets/json/gabgeunse2021.json'
 import gsap from 'gsap'
+import EndingCredit from "./EndingCredit.vue";
 
+const WIDTH = window.innerWidth
 const HEIGHT = window.innerHeight
-const score = ref<Number>(24000000)
+const score = ref<number>(24000000)
 const option = reactive<{ [key: string]: string }>({
   dotSize: 0,
-  width: window.innerWidth,
-  height: window.innerHeight - 64,
+  width: WIDTH,
+  height: HEIGHT - 70,
   contained: false,
   direction: 'btt',
   data: null,
@@ -21,7 +24,7 @@ const option = reactive<{ [key: string]: string }>({
   disabled: false,
   clickable: true,
   duration: 0,
-  tooltip: 'always',
+  tooltip: 'none',
   tooltipFormatter: '',
   useKeyboard: false,
   keydownHook: null,
@@ -29,36 +32,89 @@ const option = reactive<{ [key: string]: string }>({
   enableCross: true,
   order: false,
   marks: false,
-  dotOptions: true,
-  process: true,
-  dotStyle: 10,
 })
-const isShowInfo = ref<Boolean>(false)
-const koreaAvg = ref<Number>(3090000 * 12)
-let avg = ref<Number>(koreaAvg)
-console.log(HEIGHT)
+const isShowEndingCredit = ref<Boolean>(false)
+const isShowInfo = ref<Boolean>(true)
+const koreaAvg = ref<number>(3090000 * 12)
+const iptH = ref<number>(1)
+const iptF = ref<number>(100000)
+let avg: number = koreaAvg.value
+let avgInterval: number = null
+
+// 대한민국 평균연봉 인터렉션
 const avgMotion = () : void => {
-  const avgInterval = setInterval(() => {
+  if (avgInterval) clearInterval(avgInterval)
+  avgInterval = setInterval(() => {
     const random = Math.floor(Math.random() * 10) + 1
     if ( random ) {
       if ( random % 2 === 0) {
-        avg.value += 500000
+        avg += 500000
       } else {
-        avg.value -= 500000
+        avg -= 500000
       }
-      if (avg > koreaAvg + koreaAvg * 0.1 || avg < koreaAvg - koreaAvg * 0.1) avg.value = koreaAvg
-      console.log(`${(HEIGHT - 75) * (avg.value / 1000000000)}%`)
-      gsap.to('.avgLine', 0.5, {
-        bottom: `${(HEIGHT - 75) * (avg.value / 1000000000)}%`
+      if (avg > koreaAvg.value + koreaAvg.value * 0.05 || avg < koreaAvg.value - koreaAvg.value * 0.05) avg = koreaAvg.value
+      gsap.to('.avgLine', 1, {
+        bottom: `${(avg * 100 / 100000000) - 20}%`,
+        ease: 'power3.inOut',
+        autoAlpha: 1
       })
     }
   }, 3000)
 }
 
+// 4대보험 계산
+const MC = computed(() : number => {
+  return (score.value / 12) - iptF.value
+})
+// 국민연금
+const nationalPension = computed(() : number => {
+  return zeroCut((MC.value > 5240000 ? 5240000 : MC.value) * 0.045)
+})
+// 의료보험
+const nationalHealth = computed(() : number => {
+  return zeroCut(MC.value * 0.0343)
+})
+// 장기요양보험
+const longtermCareInsurance = computed(() : number => {
+  return zeroCut(nationalHealth.value * 0.1152)
+})
+// 고용보험
+const employmentInsurance = computed(() : number => {
+  return zeroCut(MC.value * 0.008)
+})
+// 소득세
+const incomeTax = computed((): number => {
+  const d = gabgeunse2021.tax
+  const l = d.length
+  const s = MC.value / 1000
+  console.log(s)
+  for (let i = 0; i < l; i += 1) {
+    if (s >= parseFloat(d[i][0]) && s < parseFloat(d[i][1])) {
+      return parseFloat(d[i][1 + iptH.value])
+    }
+  }
+  return 0
+})
+// 지방소득세
+const localIncomeTax = computed(() : number => {
+  return zeroCut(incomeTax.value * 0.1)
+})
+const realAmount = computed((): number => {
+  return Math.floor((MC.value + iptF.value) - (nationalPension.value + nationalHealth.value + longtermCareInsurance.value + employmentInsurance.value + incomeTax.value + localIncomeTax.value))
+})
 
+// zero cut function
+const zeroCut = (num: number) : number => {
+  return Math.floor(num / 10) * 10
+}
 
 watch(score, () => {
   if (isShowInfo) isShowInfo.value = false
+})
+watch(isShowEndingCredit, () => {
+  if (isShowEndingCredit) setTimeout(_ => {
+    isShowEndingCredit.value = false
+  }, 30000)
 })
 
 onBeforeMount(() => {
@@ -87,13 +143,39 @@ onBeforeMount(() => {
       class="salary"
       v-bind="option"
       :tooltip-formatter="v => v.toLocaleString()"
-  />
-  <div class="avgLine" />
+  >
+    <div class="result">
+      <dl>
+        <dt>국민연금</dt>
+        <dd>{{ nationalPension.toLocaleString() }}</dd>
+      </dl>
+      <dl>
+        <dt>의료보험</dt>
+        <dd>{{ (nationalHealth).toLocaleString() }} <span>+{{ longtermCareInsurance.toLocaleString() }}</span></dd>
+      </dl>
+      <dl>
+        <dt>고용보험</dt>
+        <dd>{{ employmentInsurance.toLocaleString() }}</dd>
+      </dl>
+      <dl>
+        <dt>소득세</dt>
+        <dd>{{ (incomeTax).toLocaleString() }} <span>+{{ localIncomeTax.toLocaleString() }}</span></dd>
+      </dl>
+      <dl>
+        <dt>월급</dt>
+        <dd>{{ MC.toLocaleString() }}</dd>
+      </dl>
+    </div>
+    <div class="avgLine" />
+  </VueSlider>
   <div
     class="info-card"
     :class="{'active': isShowInfo}"
   >
-    <div class="header">
+    <div
+        class="header"
+        @click="isShowInfo = !isShowInfo"
+    >
       <div class="num-box">
         <img
             style="display: inline-block"
@@ -101,12 +183,10 @@ onBeforeMount(() => {
             height="28"
             :src="tada"
         />
-        <span class="num">{{ score.toLocaleString()}}</span>
+        <span class="num">{{ realAmount.toLocaleString() }}</span>
       </div>
       <div class="setting-box">
-        <button
-          @click="isShowInfo = !isShowInfo"
-        >
+        <button>
           <img
               width="20"
               height="20"
@@ -116,22 +196,66 @@ onBeforeMount(() => {
       </div>
     </div>
     <div class="info-content">
-
+      <dl>
+        <dt><h3>인적공제</h3><span>{{ iptH }}명</span></dt>
+        <dd>
+          <vue-slider
+              v-model="iptH"
+              :min="1"
+              :max="10"
+              tooltip="none"
+          />
+        </dd>
+      </dl>
+      <dl>
+        <dt><h3>비급여</h3><span>{{ iptF.toLocaleString() }}원</span></dt>
+        <dd>
+          <vue-slider
+              v-model="iptF"
+              :step="100000"
+              :min="0"
+              :interval="100000"
+              :max="1000000"
+              tooltip="none"
+          />
+        </dd>
+      </dl>
+      <div class="showEndingCredit">
+        <button @click="isShowEndingCredit = true">개발자만나기</button>
+      </div>
     </div>
   </div>
+  <ending-credit
+      v-if="isShowEndingCredit"
+      @close="isShowEndingCredit = false"
+  />
 </template>
 
 <style lang="scss">
-
-/* Card */
+/* 정보창 */
+.result {
+  position: absolute;
+  bottom: 0;
+  z-index: 2;
+  padding: 20px;
+  dl {
+    dt, dd {
+      display: inline-flex;
+    }
+    dt {
+      width: 100px;
+    }
+  }
+}
+/* 세부설정 */
 .info-card {
   position: fixed;
-  bottom: -250px;
+  bottom: -249px;
   left: 0;
   width: 100%;
   background-color: #f7cb71;
   z-index: 2;
-  transition: 0.25s bottom ease-out;
+  transition: 0.25s bottom ease-in-out;
   &.active {
     bottom: 0;
   }
@@ -169,12 +293,57 @@ onBeforeMount(() => {
     }
   }
   .info-content {
+    position: relative;
     padding: 20px;
     height: 200px;
-    background-color: #fff;
+    background-color: #fef8ea;
+    &:after {
+      content: "개인 소득여건에 따라 차이가 발생할 수 있습니다.";
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      font-size: 12px;
+      font-weight: 100;
+      color: #000;
+    }
+    dl {
+      margin-bottom: 20px;
+      dt {
+        h3 {
+          display: inline-block;
+          color: #7f7f7f;
+        }
+        span {
+          display: inline-block;
+          padding-left: 10px;
+          font-size: 16px;
+          font-weight: bold;
+        }
+      }
+      .vue-slider-dot-handle {
+        border-color: #f7cb71;
+      }
+    }
+    .showEndingCredit {
+      width: 100%;
+      position: absolute;
+      bottom: 30px;
+      button {
+        display: block;
+        line-height: 35px;
+        width: 25%;
+        background-color: #f7cb71;
+        border-radius: 4px;
+        color: #fefaf0;
+        font-weight: bold;
+        font-size: 16px;
+        /* button Popular drop shadow */
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      }
+    }
   }
 }
-/* Avg Line */
+/* 대한민국 평균라인 */
 .avgLine {
   position: absolute;
   bottom: -1px;
@@ -183,6 +352,7 @@ onBeforeMount(() => {
   height: 1px;
   background-color: red;
   z-index: 1;
+  opacity: 0;
   &:after {
     content: '대한민국 평균';
     position: absolute;
@@ -206,6 +376,7 @@ onBeforeMount(() => {
     border-bottom: 10px solid transparent;
   }
 }
+
 /* Slider */
 .vue-slider-rail {
   border-radius: 0;
@@ -221,7 +392,7 @@ onBeforeMount(() => {
 }
 .vue-slider-dot-tooltip {
   margin-top: 30px;
-  left: 20px;
+  left: 30px;
   z-index: 9;
   .vue-slider-dot-tooltip-text {
     font-size: 30px;

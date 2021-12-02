@@ -8,6 +8,7 @@ import Salary from './components/Salary.vue'
 
 <style lang="scss">
 @import '/src/assets/css/style.scss';
+@import '/src/assets/css/starwarsintro.css';
 #app {
 }
 </style>
