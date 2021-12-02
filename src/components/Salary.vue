@@ -9,8 +9,8 @@ import gsap from 'gsap'
 import EndingCredit from "./EndingCredit.vue"
 
 
-const WIDTH = window.innerWidth
-const HEIGHT = window.innerHeight
+let WIDTH = window.innerWidth
+let HEIGHT = window.innerHeight
 const score = ref<number>(24000000)
 const option = reactive<{ [key: string]: any }>({
   dotSize: 0,
@@ -108,6 +108,14 @@ const zeroCut = (num: number) : number => {
   return Math.floor(num / 10) * 10
 }
 
+const handleResize = () : void => {
+  console.log('wow')
+  WIDTH = window.innerWidth
+  HEIGHT = window.innerHeight
+  option.width = WIDTH
+  option.height = HEIGHT - 70
+}
+
 watch(score, () => {
   if (isShowInfo) isShowInfo.value = false
 })
@@ -119,6 +127,7 @@ watch(isShowEndingCredit, () => {
 
 onBeforeMount(() => {
   // Vue3 Typescript GSAP.to score count up
+  window.addEventListener('resize', handleResize)
   gsap.to(score, 0.5, {
     value: 80000000,
     delay: 1,
@@ -149,19 +158,19 @@ onBeforeMount(() => {
     >
       <dl>
         <dt>국민연금</dt>
-        <dd>{{ nationalPension.toLocaleString() }}원</dd>
+        <dd>{{ nationalPension.toLocaleString() }}</dd>
       </dl>
       <dl>
         <dt>의료보험</dt>
-        <dd>{{ (nationalHealth).toLocaleString() }}원<span>+{{ longtermCareInsurance.toLocaleString() }}원</span></dd>
+        <dd>{{ (nationalHealth).toLocaleString() }}<span>+{{ longtermCareInsurance.toLocaleString() }}</span></dd>
       </dl>
       <dl>
         <dt>고용보험</dt>
-        <dd>{{ employmentInsurance.toLocaleString() }}원</dd>
+        <dd>{{ employmentInsurance.toLocaleString() }}</dd>
       </dl>
       <dl>
         <dt>소득세</dt>
-        <dd>{{ (incomeTax).toLocaleString() }}원 <span>+{{ localIncomeTax.toLocaleString() }}원</span></dd>
+        <dd>{{ (incomeTax).toLocaleString() }} <span>+{{ localIncomeTax.toLocaleString() }}</span></dd>
       </dl>
     </div>
     <div class="avgLine" />
