@@ -134,11 +134,11 @@ watch(isShowEndingCredit, () => {
 onBeforeMount(() => {
   // Vue3 Typescript GSAP.to score count up
   window.addEventListener('resize', handleResize)
-  score.value = localStorage.score ? parseInt(localStorage.score) : 60000000
+  const s = localStorage.score ? parseInt(localStorage.score) : 60000000
   iptH.value = localStorage.iptH ? parseInt(localStorage.iptH) : 1
   iptF.value = localStorage.iptF ? parseInt(localStorage.iptF) : 100000
   gsap.to(score, 0.5, {
-    value: score.value,
+    value: s,
     delay: 1,
     roundProps: 'value',
     ease: 'power3.inOut',
@@ -147,6 +147,7 @@ onBeforeMount(() => {
     onComplete: () => {
       setTimeout(() => {
         option.tooltip = 'active'
+        score.value = s
         avgMotion()
       }, 1000);
     },
