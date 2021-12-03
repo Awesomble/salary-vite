@@ -9,8 +9,8 @@ import gsap from 'gsap'
 import EndingCredit from "./EndingCredit.vue"
 
 
-let WIDTH = window.innerWidth
-let HEIGHT = window.innerHeight
+let WIDTH: number = window.innerWidth
+let HEIGHT:number = window.innerHeight
 const score = ref<number>(24000000)
 const option = reactive<{ [key: string]: any }>({
   dotSize: 0,
@@ -109,7 +109,6 @@ const zeroCut = (num: number) : number => {
 }
 
 const handleResize = () : void => {
-  console.log('wow')
   WIDTH = window.innerWidth
   HEIGHT = window.innerHeight
   option.width = WIDTH
@@ -118,6 +117,13 @@ const handleResize = () : void => {
 
 watch(score, () => {
   if (isShowInfo) isShowInfo.value = false
+  localStorage.score = score.value
+})
+watch(iptH, () => {
+  localStorage.iptH = iptH.value
+})
+watch(iptF, () => {
+  localStorage.iptF = iptF.value
 })
 watch(isShowEndingCredit, () => {
   if (isShowEndingCredit) setTimeout(() => {
@@ -128,8 +134,11 @@ watch(isShowEndingCredit, () => {
 onBeforeMount(() => {
   // Vue3 Typescript GSAP.to score count up
   window.addEventListener('resize', handleResize)
+  score.value = localStorage.score ? parseInt(localStorage.score) : 60000000
+  iptH.value = localStorage.iptH ? parseInt(localStorage.iptH) : 1
+  iptF.value = localStorage.iptF ? parseInt(localStorage.iptF) : 100000
   gsap.to(score, 0.5, {
-    value: 80000000,
+    value: score.value,
     delay: 1,
     roundProps: 'value',
     ease: 'power3.inOut',
