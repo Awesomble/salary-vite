@@ -367,9 +367,8 @@ onBeforeMount(() => {
       position: absolute;
       bottom: 50px;
       button, a {
-        display: inline-flex;
-        line-height: 35px;
-        width: 100px;
+        display: inline-block;
+        padding: 10px;
         background-color: #f7cb71;
         border-radius: 4px;
         color: #fefaf0;
