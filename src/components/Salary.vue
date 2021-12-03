@@ -405,7 +405,7 @@ onBeforeMount(() => {
     content: '';
     position: absolute;
     top: -10px;
-    right: 75px;
+    right: 76px;
     width: 0;
     height: 0;
     border-top: 10px solid transparent;
