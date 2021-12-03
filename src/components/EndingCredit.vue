@@ -29,7 +29,7 @@
 
         <br>
 
-        <a target="_blank" href="https://aosdin.notion.site/9a33fde065e74aa29f3dacae0d23c5a7" class="space-button">개발자만나기버튼</a>
+<!--        <a target="_blank" href="https://aosdin.notion.site/9a33fde065e74aa29f3dacae0d23c5a7" class="space-button">개발자만나기버튼</a>-->
 
       </div>
     </div>

@@ -238,6 +238,7 @@ onBeforeMount(() => {
       </dl>
       <div class="showEndingCredit">
         <button @click="isShowEndingCredit = true">개발자만나기</button>
+        <a target="_blank" href="https://aosdin.notion.site/9a33fde065e74aa29f3dacae0d23c5a7">댓글남기기</a>
       </div>
     </div>
   </div>
@@ -365,8 +366,8 @@ onBeforeMount(() => {
       width: 100%;
       position: absolute;
       bottom: 50px;
-      button {
-        display: block;
+      button, a {
+        display: inline-flex;
         line-height: 35px;
         width: 100px;
         background-color: #f7cb71;
@@ -374,6 +375,7 @@ onBeforeMount(() => {
         color: #fefaf0;
         font-weight: bold;
         font-size: 16px;
+        margin-right: 10px;
         /* button Popular drop shadow */
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
       }
