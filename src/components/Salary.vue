@@ -394,12 +394,16 @@ onBeforeMount(() => {
   opacity: 0;
   &:after {
     content: '대한민국 평균';
+    display:block;
     position: absolute;
-    padding: 3px 5px 1px 5px;
-    font-size: 12px;
-    color: #fff;
-    top: -11px;
+    top: -10px;
     right: 0;
+    width:76px;
+    height: 20px;
+    font-size: 12px;
+    text-align: center;
+    line-height: 21px;
+    color: #fff;
     background-color: red;
     z-index: 1;
   }
