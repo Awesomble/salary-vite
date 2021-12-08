@@ -114,6 +114,20 @@ const handleResize = () : void => {
   option.width = WIDTH
   option.height = HEIGHT - 70
 }
+const kakaoLink = () : void => {
+  window.Kakao.Link.sendDefault({
+        objectType: 'text',
+        text:
+            '기본 템플릿으로 제공되는 텍스트 템플릿은 텍스트를 최대 200자까지 표시할 수 있습니다. 텍스트 템플릿은 텍스트 영역과 하나의 기본 버튼을 가집니다. 임의의 버튼을 설정할 수도 있습니다. 여러 장의 이미지, 프로필 정보 등 보다 확장된 형태의 카카오링크는 다른 템플릿을 이용해 보낼 수 있습니다.',
+        link: {
+          mobileWebUrl:
+              'https://salary.awesomble.com',
+          webUrl:
+              'https://salary.awesomble.com'
+        }
+      }
+  )
+}
 
 watch(score, () => {
   if (isShowInfo) isShowInfo.value = false
@@ -240,6 +254,7 @@ onBeforeMount(() => {
       <div class="showEndingCredit">
         <button @click="isShowEndingCredit = true">개발자만나기</button>
         <a target="_blank" href="https://aosdin.notion.site/9a33fde065e74aa29f3dacae0d23c5a7">댓글남기기</a>
+        <button class="share" @click="kakaoLink"><img height="44" src="@/assets/images/ico_kakao_link.png" alt=""></button>
       </div>
     </div>
   </div>
@@ -378,6 +393,10 @@ onBeforeMount(() => {
         margin-right: 10px;
         /* button Popular drop shadow */
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        &.share {
+          padding: 0;
+          background: transparent;
+        }
       }
     }
   }
