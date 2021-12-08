@@ -394,6 +394,8 @@ onBeforeMount(() => {
         /* button Popular drop shadow */
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
         &.share {
+          width:44px;
+          height:44px;
           padding: 0;
           background: transparent;
         }
