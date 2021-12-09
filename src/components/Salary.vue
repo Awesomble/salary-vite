@@ -1,14 +1,24 @@
 <script setup lang="ts">
 import 'vue-slider-component/theme/antd.css';
 import VueSlider from 'vue-slider-component'
-import { defineComponent, reactive, toRefs, onMounted, onBeforeMount,watch, ref, computed} from 'vue'
+import { defineComponent, reactive, toRefs, onMounted, onBeforeMount,watch, ref, computed, nextTick} from 'vue'
 import tada from '../assets/images/tada.png'
 import account from '../assets/images/account.png'
 import gabgeunse2021 from '../assets/json/gabgeunse2021.json'
 import gsap from 'gsap'
 import EndingCredit from "./EndingCredit.vue"
+import { useRoute } from 'vue-router'
 
+declare global {
+  interface Window {
+    Kakao: any
+  }
+}
 
+const route = useRoute()
+const queryScore = computed(() => route.query.score)
+const queryH = computed(() => route.query.h)
+const queryF = computed(() => route.query.f)
 let WIDTH: number = window.innerWidth
 let HEIGHT:number = window.innerHeight
 const score = ref<number>(24000000)
@@ -118,12 +128,10 @@ const kakaoLink = () : void => {
   window.Kakao.Link.sendDefault({
         objectType: 'text',
         text:
-            '기본 템플릿으로 제공되는 텍스트 템플릿은 텍스트를 최대 200자까지 표시할 수 있습니다. 텍스트 템플릿은 텍스트 영역과 하나의 기본 버튼을 가집니다. 임의의 버튼을 설정할 수도 있습니다. 여러 장의 이미지, 프로필 정보 등 보다 확장된 형태의 카카오링크는 다른 템플릿을 이용해 보낼 수 있습니다.',
+            '터치만으로 쉽게 월급을 계산해보세요.',
         link: {
-          mobileWebUrl:
-              'https://salary.awesomble.com',
-          webUrl:
-              'https://salary.awesomble.com'
+          mobileWebUrl:`https://salary.awesomble.com?score=${score.value}&h=${iptH.value}&f=${iptF.value}`,
+          webUrl: 'https://salary.awesomble.com?score=${score.value}&h=${iptH.value}&f=${iptF.value}'
         }
       }
   )
@@ -146,26 +154,27 @@ watch(isShowEndingCredit, () => {
 })
 
 onBeforeMount(() => {
-  // Vue3 Typescript GSAP.to score count up
-  window.addEventListener('resize', handleResize)
-  const s = localStorage.score ? parseInt(localStorage.score) : 60000000
-  iptH.value = localStorage.iptH ? parseInt(localStorage.iptH) : 1
-  iptF.value = localStorage.iptF ? parseInt(localStorage.iptF) : 100000
-  gsap.to(score, 0.5, {
-    value: s,
-    delay: 1,
-    roundProps: 'value',
-    ease: 'power3.inOut',
-    onUpdate: () => {
-    },
-    onComplete: () => {
-      setTimeout(() => {
-        option.tooltip = 'active'
-        score.value = s
-        avgMotion()
-      }, 1000);
-    },
-  })
+  setTimeout(() => {
+    window.addEventListener('resize', handleResize)
+    const s = localStorage.score ? parseInt(queryScore.value ? queryScore.value : localStorage.score) : 60000000
+    iptH.value = localStorage.iptH ? parseInt(queryH.value ? queryH.value : localStorage.iptH) : 1
+    iptF.value = localStorage.iptF ? parseInt(queryF.value ? queryF.value : localStorage.iptF) : 100000
+    gsap.to(score, 0.5, {
+      value: s,
+      delay: 1,
+      roundProps: 'value',
+      ease: 'power3.inOut',
+      onUpdate: () => {
+      },
+      onComplete: () => {
+        setTimeout(() => {
+          option.tooltip = 'active'
+          score.value = s
+          avgMotion()
+        }, 1000);
+      },
+    })
+  }, 0)
 })
 
 </script>
@@ -200,8 +209,8 @@ onBeforeMount(() => {
     <div class="avgLine" />
   </VueSlider>
   <div
-    class="info-card"
-    :class="{'active': isShowInfo}"
+      class="info-card"
+      :class="{'active': isShowInfo}"
   >
     <div
         class="header"
@@ -394,6 +403,8 @@ onBeforeMount(() => {
         /* button Popular drop shadow */
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
         &.share {
+          width: 44px;
+          height: 44px;
           padding: 0;
           background: transparent;
         }
