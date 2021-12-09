@@ -131,7 +131,7 @@ const kakaoLink = () : void => {
             '터치만으로 쉽게 월급을 계산해보세요.',
         link: {
           mobileWebUrl:`https://salary.awesomble.com?score=${score.value}&h=${iptH.value}&f=${iptF.value}`,
-          webUrl: 'https://salary.awesomble.com?score=${score.value}&h=${iptH.value}&f=${iptF.value}'
+          webUrl: `https://salary.awesomble.com?score=${score.value}&h=${iptH.value}&f=${iptF.value}`
         }
       }
   )
@@ -154,6 +154,7 @@ watch(isShowEndingCredit, () => {
 })
 
 onBeforeMount(() => {
+  // delay
   setTimeout(() => {
     window.addEventListener('resize', handleResize)
     const s = localStorage.score ? parseInt(queryScore.value ? queryScore.value : localStorage.score) : 60000000

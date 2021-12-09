@@ -8,7 +8,7 @@ const app = createApp(App)
 
 app.use(
     createGtm({
-            id: 'GTM-W2D3MXC'
+            id: 'GTM-5CFZF8C'
     })
 )
 
