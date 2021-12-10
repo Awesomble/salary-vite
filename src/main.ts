@@ -5,10 +5,9 @@ import { createGtm } from 'vue-gtm'
 
 const app = createApp(App)
 
-
 app.use(
     createGtm({
-            id: 'GTM-5CFZF8C'
+            id: 'GTM-MK3NCPQ'
     })
 )
 
