@@ -36,11 +36,11 @@ $grad: ();
   $v: random(4) + 2;
   $a: random(5) * .1 + .5;
   $grad: $grad, radial-gradient(
-                  $v+px $v+px at
-                  (random($w - $v * 2) + $v)+px
-                  (random($w - $v * 2) + $v)+px,
-                  rgba(255,255,255,$a) 50%,
-                  rgba(0,0,0,0)
+    $v+px $v+px at
+    (random($w - $v * 2) + $v)+px
+    (random($w - $v * 2) + $v)+px,
+    rgba(255,255,255,$a) 50%,
+    rgba(0,0,0,0)
   ) !global;
 }
 .vue-slider-rail{
@@ -60,7 +60,7 @@ $grad: ();
   content: "";
 }
 .snow:after {
-  margin-left: -$w/3 + px;
+  margin-left: -#{$w}/3 + px;
   opacity: .4;
   animation-duration: $s*2;
   animation-direction: reverse;
@@ -69,7 +69,7 @@ $grad: ();
 .snow:before {
   animation-duration: $s*3;
   animation-direction: reverse;
-  margin-left: -$w/2 + px;
+  margin-left: -#{$w}/2 + px;
   opacity: .65;
   filter: blur(1.5px);
 }
