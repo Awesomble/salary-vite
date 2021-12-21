@@ -126,16 +126,19 @@ const handleResize = () : void => {
   option.height = HEIGHT - 70
 }
 const kakaoLink = () : void => {
+  // Kakao.Link.sendDefault
   window.Kakao.Link.sendDefault({
-        objectType: 'text',
-        text:
-            '터치만으로 쉽게 월급을 계산해보세요.',
-        link: {
-          mobileWebUrl:`https://salary.awesomble.com?score=${score.value}&h=${iptH.value}&f=${iptF.value}`,
-          webUrl: `https://salary.awesomble.com?score=${score.value}&h=${iptH.value}&f=${iptF.value}`
-        }
-      }
-  )
+    objectType: 'feed',
+    content: {
+      title: '초간단 월급 계산기',
+      description: '터치만으로 쉽게 월급을 계산해보세요.',
+      imageUrl: 'https://salary.awesomble.com/thumb_seo.png',
+      link: {
+        mobileWebUrl: `https://salary.awesomble.com?score=${score.value}&h=${iptH.value}&f=${iptF.value}`,
+        androidExecutionParams: `https://salary.awesomble.com?score=${score.value}&h=${iptH.value}&f=${iptF.value}`
+      },
+    },
+  })
 }
 
 watch(score, () => {
@@ -264,8 +267,8 @@ onBeforeMount(() => {
         </dd>
       </dl>
       <div class="showEndingCredit">
-        <button @click="isShowEndingCredit = true">개발자만나기</button>
-        <a target="_blank" href="https://aosdin.notion.site/9a33fde065e74aa29f3dacae0d23c5a7">댓글남기기</a>
+<!--        <button @click="isShowEndingCredit = true">개발자만나기</button>-->
+<!--        <a target="_blank" href="https://aosdin.notion.site/9a33fde065e74aa29f3dacae0d23c5a7">댓글남기기</a>-->
         <button class="share" @click="kakaoLink"><img height="44" src="@/assets/images/ico_kakao_link.png" alt=""></button>
       </div>
     </div>
