@@ -1,4 +1,4 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
-Sitemap: https://www.awesomble.com/sitemap.xml
+Allow: /
+Sitemap: https://salary.awesomble.com/sitemap.xml
