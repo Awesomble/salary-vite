@@ -3,8 +3,8 @@ import 'vue-slider-component/theme/antd.css';
 import VueSlider from 'vue-slider-component'
 import { defineComponent, reactive, toRefs, onMounted, onBeforeMount,watch, ref, computed, nextTick} from 'vue'
 import tada from '../assets/images/tada.png'
-//import account from '../assets/images/account.png'
-import account from '../assets/images/ico_santa.png'
+import account from '../assets/images/account.png'
+// import account from '../assets/images/ico_santa.png'
 import gabgeunse2021 from '../assets/json/gabgeunse2021.json'
 import gsap from 'gsap'
 import EndingCredit from "./EndingCredit.vue"
