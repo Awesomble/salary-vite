@@ -212,7 +212,6 @@ onBeforeMount(() => {
       </dl>
     </div>
     <div class="avgLine" />
-    <div class="snow" />
   </VueSlider>
   <div
       class="info-card"
@@ -388,6 +387,9 @@ onBeforeMount(() => {
           font-size: 16px;
           font-weight: bold;
         }
+      }
+      dd {
+        padding: 0 10px;
       }
       .vue-slider-dot-handle {
         border-color: #f7cb71;
